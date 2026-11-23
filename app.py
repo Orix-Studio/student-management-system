@@ -1,5 +1,5 @@
 """app.py: a small menu. Only input() and print() here. All SQL is in student_repo.py."""
-from student_repo import get_all_students, find_student
+from student_repo import get_all_students, find_student, search_students
 
 def print_student(s):
     print(f"{s['first_name']:>3} {s['last_name']:<8} {s['email']:<18} {s['class_name']}")
@@ -24,11 +24,23 @@ def show_one_student():
         print_student(student)
 
 
+def search_student_name():
+    name = input("Search student name: ").strip()
+    students = search_students(name)
+    if not students:
+        print("No student with this name.")
+    else:
+        for s in students:
+            print_student(s)
+        print(f"\n{len(students)} students for this search.")
+
+
 def main():
     while True:
         print(f"\n=== Student Management System ===\n"
               f"1. Show all students\n"
               f"2. Find student by email\n"
+              f"3. Search student by name\n"
               f"0. Quit")
         choice = input("Choose: ").strip()
         if choice == "0":
@@ -38,6 +50,8 @@ def main():
             show_all_students()
         elif choice == "2":
             show_one_student()
+        elif choice == "3":
+            search_student_name()
         else:
             print("Please choose 1, 2 or 0.")
 

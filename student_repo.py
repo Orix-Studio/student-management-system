@@ -40,3 +40,26 @@ def find_student(email):
         if cursor is not None:
             cursor.close()
         conn.close()
+
+
+def search_students(word):
+    """Return the students whose first or last name contains `word`, sorted by last name."""
+    pattern = f"%{word}%"
+    conn = get_connection()
+    cursor = None
+
+    try:
+        cursor = conn.cursor(dictionary=True)
+        sql = """
+            SELECT *
+            FROM student
+            WHERE first_name LIKE %s OR last_name LIKE %s
+            ORDER BY last_name, first_name
+        """
+        cursor.execute(sql, (pattern, pattern))
+        return cursor.fetchall()
+
+    finally:
+        if cursor is not None:
+            cursor.close()
+        conn.close()
