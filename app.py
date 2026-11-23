@@ -1,6 +1,6 @@
 """app.py: a small menu. Only input() and print() here. All SQL is in student_repo.py."""
 import mysql.connector
-from student_repo import get_all_students, find_student, search_students
+from student_repo import get_all_students, find_student, search_students, add_student, EmailTaken
 
 def print_student(s):
     print(f"{s['first_name']:>3} {s['last_name']:<8} {s['email']:<18} {s['class_name']}")
@@ -36,12 +36,28 @@ def search_student_name():
         print(f"\n{len(students)} students found for this search.")
 
 
+def register_student():
+    first_name = input("Enter first name: ")
+    last_name = input("Enter last name: ")
+    email = input("Enter email: ")
+    class_name = input("Enter class name: ")
+
+    try:
+        new_id = add_student(first_name, last_name, email, class_name)
+        print(f"Welcome {first_name.strip()}! You are student #{new_id}.")
+    except EmailTaken:
+        print("Email already registered.")
+    except ValueError as err:
+        print(err)
+
+
 def main():
     while True:
         print(f"\n=== Student Management System ===\n"
               f"1. Show all students\n"
               f"2. Find student by email\n"
               f"3. Search student by name\n"
+              f"4. Register student\n"
               f"0. Quit")
         choice = input("Choose: ").strip()
         if choice == "0":
@@ -54,6 +70,8 @@ def main():
                 show_one_student()
             elif choice == "3":
                 search_student_name()
+            elif choice == "4":
+                register_student()
             else:
                 print("Please choose 1, 2 or 0.")
         except mysql.connector.Error as err:
