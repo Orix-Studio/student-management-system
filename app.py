@@ -1,4 +1,5 @@
 """app.py: a small menu. Only input() and print() here. All SQL is in student_repo.py."""
+import mysql.connector
 from student_repo import get_all_students, find_student, search_students
 
 def print_student(s):
@@ -32,7 +33,7 @@ def search_student_name():
     else:
         for s in students:
             print_student(s)
-        print(f"\n{len(students)} students for this search.")
+        print(f"\n{len(students)} students found for this search.")
 
 
 def main():
@@ -46,14 +47,18 @@ def main():
         if choice == "0":
             print("Goodbye!")
             break
-        elif choice == "1":
-            show_all_students()
-        elif choice == "2":
-            show_one_student()
-        elif choice == "3":
-            search_student_name()
-        else:
-            print("Please choose 1, 2 or 0.")
+        try:
+            if choice == "1":
+                show_all_students()
+            elif choice == "2":
+                show_one_student()
+            elif choice == "3":
+                search_student_name()
+            else:
+                print("Please choose 1, 2 or 0.")
+        except mysql.connector.Error as err:
+            # The user gets one calm sentence, not the SQL details.
+            print(f"Sorry, something went wrong with the database (error {err.errno}). Please try again later.")
 
 
 if __name__ == "__main__":
