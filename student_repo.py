@@ -215,8 +215,24 @@ def email_exists(email):
 
 def search_students_in_class(word, class_name):
     """Return the students in one class whose first or last name contains `word`, sorted by last name."""
-    # TODO
-    raise NotImplementedError
+    name_pattern = f"%{word}%"
+
+    conn = get_connection()
+    cursor = None
+
+    try:
+        cursor = conn.cursor(dictionary=True)
+        cursor.execute("""
+            SELECT last_name
+            FROM student
+            WHERE (first_name LIKE %s OR last_name LIKE %s) AND class_name LIKE %s
+        """, (name_pattern, name_pattern, class_name))
+        return [row["last_name"] for row in cursor.fetchall()]
+
+    finally:
+        if cursor is not None:
+            cursor.close()
+        conn.close()
 
 
 SORT_COLUMNS = {
@@ -228,8 +244,24 @@ SORT_COLUMNS = {
 
 def get_students_sorted(sort="name"):
     """Return every student, sorted the way the user chose. An unknown sort uses "name"."""
-    # TODO
-    raise NotImplementedError
+    order_by = SORT_COLUMNS.get(sort, SORT_COLUMNS["name"])
+
+    conn = get_connection()
+    cursor = None
+
+    try:
+        cursor = conn.cursor(dictionary=True)
+        cursor.execute(f"""
+            SELECT first_name, last_name, class_name
+            FROM student
+            ORDER BY {order_by}
+        """)
+        return [f"{row['first_name']} {row['last_name']} ({row['class_name']})" for row in cursor.fetchall()]
+
+    finally:
+        if cursor is not None:
+            cursor.close()
+        conn.close()
 
 
 # ---------- Station 3: change and delete ----------
