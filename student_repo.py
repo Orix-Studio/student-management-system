@@ -128,26 +128,87 @@ def _student_exists(cursor, student_id):
 
 def count_students():
     """Return the number of students, as an int."""
-    # TODO
-    raise NotImplementedError
+    conn = get_connection()
+    cursor = None
+
+    try:
+        cursor = conn.cursor()
+        cursor.execute("SELECT COUNT(*) FROM student")
+        return cursor.fetchone()[0]
+
+    finally:
+        if cursor is not None:
+            cursor.close()
+        conn.close()
 
 
 def get_class_names():
     """Return every class name once, sorted, as a list of strings: ['2A', '2B']."""
-    # TODO
-    raise NotImplementedError
+    conn = get_connection()
+    cursor = None
+
+    try:
+        cursor = conn.cursor(dictionary=True)
+        cursor.execute("""
+            SELECT class_name
+            FROM student
+            GROUP BY class_name
+            ORDER BY class_name
+        """)
+        return [row["class_name"] for row in cursor.fetchall()]
+
+    finally:
+        if cursor is not None:
+            cursor.close()
+        conn.close()
 
 
 def get_newest_students(limit):
     """Return the `limit` newest students (highest student_id first). Raise ValueError if limit is less than 1."""
-    # TODO
-    raise NotImplementedError
+    if limit < 1:
+        raise ValueError("limit must be greater than 0")
+
+    conn = get_connection()
+    cursor = None
+
+    try:
+        cursor = conn.cursor(dictionary=True)
+        cursor.execute("""
+                SELECT student_id, first_name, last_name
+                FROM student
+                ORDER BY student_id DESC
+                LIMIT %s
+            """, (limit,))
+        return cursor.fetchall()
+
+
+    finally:
+        if cursor is not None:
+            cursor.close()
+        conn.close()
 
 
 def email_exists(email):
     """Return True if a student has this email. Spaces and upper case don't matter."""
-    # TODO
-    raise NotImplementedError
+    raw_email = email.strip().lower()
+    conn = get_connection()
+    cursor = None
+
+    try:
+        cursor = conn.cursor()
+        cursor.execute("""
+            SELECT *
+            FROM student
+            WHERE email = %s
+        """, (raw_email,))
+
+        if cursor.fetchone() is not None:
+            return True
+
+    finally:
+        if cursor is not None:
+            cursor.close()
+        conn.close()
 
 
 # ---------- Station 2: search ----------
