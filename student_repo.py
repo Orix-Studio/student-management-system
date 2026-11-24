@@ -4,6 +4,9 @@ from mysql.connector import errorcode
 from db import get_connection
 
 
+
+# =============== Lecture 2 ===============
+
 class EmailTaken(Exception):
     """Another student already has that email."""
 
@@ -105,3 +108,88 @@ def add_student(first_name, last_name, email, class_name):
         if cursor is not None:
             cursor.close()
         conn.close()
+
+
+
+
+# =============== Practice day ===============
+
+class NotFound(Exception):
+    """There is no student with that id."""
+
+
+def _student_exists(cursor, student_id):
+    """Helper (ready-made): True if a student with this id exists. Used by change_class() and change_email()."""
+    cursor.execute("SELECT 1 FROM student WHERE student_id = %s", (student_id,))
+    return cursor.fetchone() is not None
+
+
+# ---------- Station 1: read ----------
+
+def count_students():
+    """Return the number of students, as an int."""
+    # TODO
+    raise NotImplementedError
+
+
+def get_class_names():
+    """Return every class name once, sorted, as a list of strings: ['2A', '2B']."""
+    # TODO
+    raise NotImplementedError
+
+
+def get_newest_students(limit):
+    """Return the `limit` newest students (highest student_id first). Raise ValueError if limit is less than 1."""
+    # TODO
+    raise NotImplementedError
+
+
+def email_exists(email):
+    """Return True if a student has this email. Spaces and upper case don't matter."""
+    # TODO
+    raise NotImplementedError
+
+
+# ---------- Station 2: search ----------
+
+def search_students_in_class(word, class_name):
+    """Return the students in one class whose first or last name contains `word`, sorted by last name."""
+    # TODO
+    raise NotImplementedError
+
+
+SORT_COLUMNS = {
+    "name": "last_name, first_name",
+    "first_name": "first_name, last_name",
+    "class": "class_name, last_name, first_name",
+}
+
+
+def get_students_sorted(sort="name"):
+    """Return every student, sorted the way the user chose. An unknown sort uses "name"."""
+    # TODO
+    raise NotImplementedError
+
+
+# ---------- Station 3: change and delete ----------
+
+def change_class(student_id, new_class):
+    """UPDATE: move a student to another class.
+    Raise ValueError if the class is empty or longer than 10 characters, and NotFound for an unknown id.
+    """
+    # TODO
+    raise NotImplementedError
+
+
+def change_email(student_id, new_email):
+    """UPDATE: give a student a new email.
+    Raise ValueError if it is empty, NotFound for an unknown id, and EmailTaken if another student has it.
+    """
+    # TODO
+    raise NotImplementedError
+
+
+def delete_student(student_id):
+    """DELETE: remove a student. Raise NotFound if there was no student with that id."""
+    # TODO
+    raise NotImplementedError
