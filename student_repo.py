@@ -270,19 +270,91 @@ def change_class(student_id, new_class):
     """UPDATE: move a student to another class.
     Raise ValueError if the class is empty or longer than 10 characters, and NotFound for an unknown id.
     """
-    # TODO
-    raise NotImplementedError
+    class_format = new_class.strip().upper()
+    if not class_format or len(class_format) > 10:
+        raise ValueError("A class name must have 1 to 10 characters.")
+
+    conn = get_connection()
+    cursor = None
+
+    try:
+        cursor = conn.cursor()
+        if not _student_exists(cursor, student_id):
+            raise NotFound(f"There is no student #{student_id}")
+        cursor.execute("""
+            UPDATE student
+            SET class_name = %s
+            WHERE student_id = %s
+        """, (class_format, student_id))
+        conn.commit()
+
+    except mysql.connector.Error:
+        conn.rollback()
+        raise
+
+    finally:
+        if cursor is not None:
+            cursor.close()
+        conn.close()
 
 
 def change_email(student_id, new_email):
     """UPDATE: give a student a new email.
     Raise ValueError if it is empty, NotFound for an unknown id, and EmailTaken if another student has it.
     """
-    # TODO
-    raise NotImplementedError
+    email_format = new_email.strip().lower()
+    if not email_format:
+        raise ValueError("A student email must be given.")
+
+    conn = get_connection()
+    cursor = None
+
+    try:
+        cursor = conn.cursor()
+        if not _student_exists(cursor, student_id):
+            raise NotFound(f"There is no student #{student_id}")
+        cursor.execute("""
+            UPDATE student
+            SET email = %s
+            WHERE student_id = %s
+        """, (email_format, student_id))
+        conn.commit()
+
+    except mysql.connector.Error as err:
+        conn.rollback()
+        if err.errno == errorcode.ER_DUP_ENTRY:
+            raise EmailTaken(f"{email_format} is already registered") from err
+        raise
+
+    finally:
+        if cursor is not None:
+            cursor.close()
+        conn.close()
 
 
 def delete_student(student_id):
     """DELETE: remove a student. Raise NotFound if there was no student with that id."""
-    # TODO
-    raise NotImplementedError
+    if not student_id:
+        raise ValueError("Student ID must be given.")
+
+    conn = get_connection()
+    cursor = None
+
+    try:
+        cursor = conn.cursor()
+        if not _student_exists(cursor, student_id):
+            raise NotFound(f"There is no student #{student_id}")
+        cursor.execute("""
+            DELETE FROM student
+            WHERE student_id = %s
+        """, (student_id,))
+        conn.commit()
+
+    except mysql.connector.Error:
+        conn.rollback()
+        raise
+
+    finally:
+        if cursor is not None:
+            cursor.close()
+        conn.close()
