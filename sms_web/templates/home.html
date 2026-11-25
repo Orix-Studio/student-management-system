@@ -1,0 +1,6 @@
+{% extends "base.html" %}
+{% block content %}
+  <h1>Student Management System</h1>
+  <p>Welcome! Choose <a href="{{ url_for('students.student_list') }}">Students</a>
+     or <a href="{{ url_for('classes.class_list') }}">Classes</a> in the menu.</p>
+{% endblock %}

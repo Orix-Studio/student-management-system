@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+{% block title %}Students{% endblock %}
+{% block content %}
+  <h1>Students</h1>
+  <form method="get" action="{{ url_for('students.student_list') }}">
+    <input name="q" placeholder="Part of a name" value="{{ q|default('') }}">
+    <button>Search</button>
+  </form>
+  {% if students %}
+    <table>
+      <tr><th>Id</th><th>Name</th><th>Email</th><th>Class</th></tr>
+      {% for s in students %}
+        <tr>
+          <td>{{ s.student_id }}</td>
+          <td><a href="{{ url_for('students.student_detail', student_id=s.student_id) }}">{{ s.first_name }} {{ s.last_name }}</a></td>
+          <td>{{ s.email }}</td>
+          <td>{{ s.class_name }}</td>
+        </tr>
+      {% endfor %}
+    </table>
+    <p>{{ students|length }} students</p>
+  {% else %}
+    <p>No students found.</p>
+  {% endif %}
+{% endblock %}

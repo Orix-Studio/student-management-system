@@ -358,3 +358,61 @@ def delete_student(student_id):
         if cursor is not None:
             cursor.close()
         conn.close()
+
+
+def get_student(student_id):
+    """Return one student as a dict, or None if there is no student with that id."""
+    conn = get_connection()
+    cursor = None
+    try:
+        cursor = conn.cursor(dictionary=True)
+        sql = """
+            SELECT student_id, first_name, last_name, email, class_name
+            FROM student
+            WHERE student_id = %s
+        """
+        cursor.execute(sql, (student_id,))
+        return cursor.fetchone()
+    finally:
+        if cursor is not None:
+            cursor.close()
+        conn.close()
+
+
+def class_overview():
+    """Return every class with its number of students, sorted by class name."""
+    conn = get_connection()
+    cursor = None
+    try:
+        cursor = conn.cursor(dictionary=True)
+        cursor.execute("""
+            SELECT class_name, COUNT(*) AS student_count
+            FROM student
+            GROUP BY class_name
+            ORDER BY class_name
+        """)
+        return cursor.fetchall()
+    finally:
+        if cursor is not None:
+            cursor.close()
+        conn.close()
+
+
+def students_in_class(class_name):
+    """Return the students in one class, sorted by last name. [] if nobody is in that class."""
+    conn = get_connection()
+    cursor = None
+    try:
+        cursor = conn.cursor(dictionary=True)
+        sql = """
+            SELECT student_id, first_name, last_name, email, class_name
+            FROM student
+            WHERE class_name = %s
+            ORDER BY last_name, first_name
+        """
+        cursor.execute(sql, (class_name,))
+        return cursor.fetchall()
+    finally:
+        if cursor is not None:
+            cursor.close()
+        conn.close()

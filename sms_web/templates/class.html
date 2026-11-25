@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+{% block title %}Class {{ class_name }}{% endblock %}
+{% block content %}
+  <h1>Class {{ class_name }}</h1>
+  <table>
+    <tr><th>Name</th><th>Email</th></tr>
+    {% for s in students %}
+      <tr>
+        <td><a href="{{ url_for('students.student_detail', student_id=s.student_id) }}">{{ s.first_name }} {{ s.last_name }}</a></td>
+        <td>{{ s.email }}</td>
+      </tr>
+    {% endfor %}
+  </table>
+  <p>{{ students|length }} students</p>
+{% endblock %}
