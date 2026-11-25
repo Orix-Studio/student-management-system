@@ -221,13 +221,13 @@ def search_students_in_class(word, class_name):
     cursor = None
 
     try:
-        cursor = conn.cursor(dictionary=True)
+        cursor = conn.cursor()
         cursor.execute("""
-            SELECT last_name
+            SELECT first_name, last_name
             FROM student
             WHERE (first_name LIKE %s OR last_name LIKE %s) AND class_name LIKE %s
         """, (name_pattern, name_pattern, class_name))
-        return [row["last_name"] for row in cursor.fetchall()]
+        return cursor.fetchall()
 
     finally:
         if cursor is not None:
