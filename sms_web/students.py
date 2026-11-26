@@ -1,5 +1,5 @@
 """The students department: every page whose address starts with /students."""
-from flask import Blueprint, abort, render_template, request
+from flask import Blueprint, abort, flash, redirect, render_template, request, url_for
 
 import student_repo as repo
 
@@ -26,3 +26,18 @@ def student_detail(student_id):
     if student is None:
         abort(404)
     return render_template("student.html", student=student)
+
+
+@bp.route("/students/new", methods=["GET", "POST"])
+def student_new():
+    if request.method == "POST":
+        print("The browser sent:", request.form)
+        new_id = repo.add_student(
+            request.form.get("first_name", ""),
+            request.form.get("last_name", ""),
+            request.form.get("email", ""),
+            request.form.get("class_name", ""),
+        )
+        flash("The student was added.", "success")
+        return redirect(url_for("students.student_detail", student_id=new_id))
+    return render_template("student_form.html")
