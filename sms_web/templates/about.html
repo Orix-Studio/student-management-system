@@ -1,28 +1,21 @@
-<!doctype html>
-<html lang="en">
-<head>
-  <meta charset="utf-8">          <!-- so æ, ø and å show correctly -->
-  <title>About | SMS</title>      <!-- the text on the browser tab -->
-</head>
-<body>
-  <h1>About the Student Management System</h1>
-  <p>Made by <strong>class 2A and 2B</strong> in the Python/Database course.</p>
+{% extends "base.html" %}
+{% block title %}About{% endblock %}
+{% block content %}
+<h1>About the Student Management System</h1>
+<p>Made by <strong>class 2A and 2B</strong> in the Python/Database course.</p>
 
-  <h2>Our classes</h2>
-  <table>
-    <tr><th>Class</th><th>Room</th></tr>
-    <tr><td>2A</td><td>204</td></tr>
-    <tr><td>2B</td><td>207</td></tr>
-    <tr><td>3A</td><td>304</td></tr>
-  </table>
+<h2>Our classes</h2>
+<table>
+  <tr><th>Class</th><th>Room</th></tr>
+  <tr><td>2A</td><td>204</td></tr>
+  <tr><td>2B</td><td>207</td></tr>
+</table>
 
-  <h2>Goals</h2>
-  <ul>
-    <li>Add students from the browser</li>
-    <li>Put the project on GitHub</li>
-    <li>Master Python + MYSQL</li>
-  </ul>
+<h2>Goals</h2>
+<ul>
+  <li>Add students from the browser</li>
+  <li>Put the project on GitHub</li>
+</ul>
 
-  <p><a href="/students">All students</a></p>
-</body>
-</html>
+<p><a href="/students">All students</a></p>
+{% endblock %}
