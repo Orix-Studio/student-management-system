@@ -1,5 +1,6 @@
 """The students department: every page whose address starts with /students."""
 from flask import Blueprint, abort, flash, redirect, render_template, request, url_for
+from .validation import validate_student
 
 import student_repo as repo
 
@@ -30,14 +31,16 @@ def student_detail(student_id):
 
 @bp.route("/students/new", methods=["GET", "POST"])
 def student_new():
+    form, errors = {}, {}
     if request.method == "POST":
-        print("The browser sent:", request.form)
-        new_id = repo.add_student(
-            request.form.get("first_name", ""),
-            request.form.get("last_name", ""),
-            request.form.get("email", ""),
-            request.form.get("class_name", ""),
-        )
-        flash("The student was added.", "success")
-        return redirect(url_for("students.student_detail", student_id=new_id))
-    return render_template("student_form.html")
+        form, errors = validate_student(request.form)              # 1. check
+        if not errors:
+            try:
+                new_id = repo.add_student(form["first_name"], form["last_name"],
+                                          form["email"], form["class_name"])   # 2. save
+            except repo.EmailTaken:
+                errors["email"] = "Another student already has this email."
+            else:
+                flash(f"{form['first_name']} {form['last_name']} was added.", "success")
+                return redirect(url_for("students.student_detail", student_id=new_id))   # 3. redirect
+    return render_template("student_form.html", form=form, errors=errors)  # show the form (again)

@@ -2,18 +2,28 @@
 {% block title %}Add a student{% endblock %}
 {% block content %}
 <h1>Add a student</h1>
-<form method="post" action="{{ url_for('students.student_new') }}">
+<form method="post" action="{{ url_for('students.student_new') }}" novalidate>
+
   <p><label for="first_name">First name</label><br>
-     <input id="first_name" name="first_name" required></p>
+     <input id="first_name" name="first_name" value="{{ form.first_name or '' }}">
+     {% if errors.first_name %}<br><span class="error">{{ errors.first_name }}</span>{% endif %}</p>
+
   <p><label for="last_name">Last name</label><br>
-     <input id="last_name" name="last_name" required></p>
+     <input id="last_name" name="last_name" value="{{ form.last_name or '' }}">
+     {% if errors.last_name %}<br><span class="error">{{ errors.last_name }}</span>{% endif %}</p>
+
   <p><label for="email">Email</label><br>
-     <input id="email" name="email" type="email" required></p>
+     <input id="email" name="email" type="email" value="{{ form.email or '' }}">
+     {% if errors.email %}<br><span class="error">{{ errors.email }}</span>{% endif %}</p>
+
   <p><label for="class_name">Class</label><br>
      <select id="class_name" name="class_name">
-       <option value="2A">2A</option>
-       <option value="2B">2B</option>
-     </select></p>
+       <option value="2A" {% if form.class_name == "2A" %}selected{% endif %}>2A</option>
+       <option value="2B" {% if form.class_name == "2B" %}selected{% endif %}>2B</option>
+     </select>
+     {% if errors.class_name %}<br><span class="error">{{ errors.class_name }}</span>{% endif %}</p>
+
   <button type="submit">Save student</button>
+  <a href="{{ url_for('students.student_list') }}">Cancel</a>
 </form>
 {% endblock %}
