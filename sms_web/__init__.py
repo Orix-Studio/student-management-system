@@ -3,20 +3,28 @@ create_app() builds the app: it registers the blueprints (students and classes),
 the home page, and the error pages. Start it from the project folder with
     python run.py      or      flask --app sms_web run --debug
 """
+import os                                    # to read SECRET_KEY
+
 import mysql.connector
+from dotenv import load_dotenv               # reads the .env file
 from flask import Flask, render_template
 
 from . import classes, students
+
+load_dotenv()                                # put the values from .env into os.environ
 
 
 def create_app():
     app = Flask(__name__)
 
-    # 1. The departments: each blueprint brings its own routes.
-    app.register_blueprint(students.bp)
-    app.register_blueprint(classes.bp)
+    # 0. The secret key from .env. flash() needs it to sign its messages (Part 6).
+    app.config["SECRET_KEY"] = os.getenv("SECRET_KEY")
 
-    # 2. The front page.
+    # 1. The departments: each blueprint brings its own routes.
+    app.register_blueprint(students.bp)      # every address that starts with /students
+    app.register_blueprint(classes.bp)       # every address that starts with /classes
+
+    # 2. The front page and the about page.
     @app.route("/")
     def home():
         return render_template("home.html")
