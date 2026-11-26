@@ -21,6 +21,10 @@ def create_app():
     def home():
         return render_template("home.html")
 
+    @app.route("/about")
+    def about():
+        return render_template("about.html")
+
     # 3. Error pages: one calm sentence for the user.
     @app.errorhandler(404)
     def not_found(err):
