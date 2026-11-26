@@ -1,11 +1,15 @@
 {% extends "base.html" %}
 {% block title %}{{ student.first_name }} {{ student.last_name }}{% endblock %}
 {% block content %}
-  <h1>{{ student.first_name }} {{ student.last_name }}</h1>
-  <table>
-    <tr><th>Id</th><td>{{ student.student_id }}</td></tr>
-    <tr><th>Email</th><td>{{ student.email }}</td></tr>
-    <tr><th>Class</th><td>{{ student.class_name }}</td></tr>
-  </table>
-  <p><a href="{{ url_for('students.student_list') }}">Back to all students</a></p>
+{# ONE template for EVERY student. The route sends a dict called student. #}
+<h1>{{ student.first_name }} {{ student.last_name }}</h1>
+<p>Class {{ student.class_name }} &middot; {{ student.email|lower }}</p>
+
+{% if student.class_name == "2A" %}
+  <p>Room 204</p>
+{% else %}
+  <p>Room 207</p>
+{% endif %}
+
+<p><a href="{{ url_for('students.student_list') }}">All students</a></p>
 {% endblock %}
