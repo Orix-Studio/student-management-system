@@ -3,7 +3,7 @@
 {% block content %}
 {# ONE template for EVERY student. The route sends a dict called student. #}
 <h1>{{ student.first_name }} {{ student.last_name }}</h1>
-<p>Class {{ student.class_name }} &middot; {{ student.email|lower }}</p>
+<p><a href="{{ url_for('classes.class_detail', class_name=student.class_name) }}">< Class {{ student.class_name }}</a> &middot; <a href="mailto:{{ student.email|lower }}">{{ student.email|lower }}</a></p>
 
 {% if student.class_name == "2A" %}
   <p>Room 204</p>

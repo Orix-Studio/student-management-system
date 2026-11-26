@@ -18,4 +18,6 @@ def validate_student(form):
         errors["email"] = "Please enter a valid email, like name@school.no."
     if data["class_name"] not in ("2A", "2B"):
         errors["class_name"] = "Please choose 2A or 2B."
+    if len(data["first_name"]) > 50:
+        errors["first_name"] = "First name must be less than 50 characters."
     return data, errors

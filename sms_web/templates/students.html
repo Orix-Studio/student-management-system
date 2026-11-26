@@ -23,5 +23,5 @@
   {% endfor %}
 </table>
 
-<p>{{ students|length }} students</p>
+<p>{{ students|length }} student{{ "s" if students|length != 1 }}</p>
 {% endblock %}
